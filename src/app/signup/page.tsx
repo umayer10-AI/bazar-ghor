@@ -6,10 +6,22 @@ import { toast } from 'react-toastify'
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 
 function SignUpPage() {
     const router = useRouter();
+    const clearOAuthCookies = async () => {
+        await fetch("/api/auth/clear-oauth-cookies", {
+            method: "POST",
+            cache: "no-store",
+        });
+    }
+
+    useEffect(() => {
+        void clearOAuthCookies();
+    }, []);
+
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
@@ -40,6 +52,8 @@ function SignUpPage() {
     }
 
     const handleGoogleSignUp = async () => {
+        await clearOAuthCookies();
+
         const { error } = await authClient.signIn.social({
             provider: "google",
             callbackURL: "/",
@@ -49,6 +63,8 @@ function SignUpPage() {
         }
     }
     const handleGithubSignUp = async () => {
+        await clearOAuthCookies();
+
         const { error } = await authClient.signIn.social({
             provider: "github",
             callbackURL: "/",

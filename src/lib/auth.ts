@@ -16,6 +16,13 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
   },
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["google", "github"],
+      requireLocalEmailVerified: false,
+    },
+  },
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -28,5 +35,6 @@ export const auth = betterAuth({
   },
   database: mongodbAdapter(db, {
     client,
+    transaction: false,
   }),
 });

@@ -14,7 +14,16 @@ function SignInPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const clearOAuthCookies = async () => {
+        await fetch("/api/auth/clear-oauth-cookies", {
+            method: "POST",
+            cache: "no-store",
+        });
+    }
+
     useEffect(() => {
+        void clearOAuthCookies();
+
         const timeoutId = window.setTimeout(() => {
             setEmail(sessionStorage.getItem("signupEmail") || "");
             setPassword(sessionStorage.getItem("signupPassword") || "");
@@ -41,6 +50,8 @@ function SignInPage() {
     }
 
     const handleGoogleSignIn = async () => {
+        await clearOAuthCookies();
+
         const { error } = await authClient.signIn.social({
             provider: "google",
             callbackURL: "/",
@@ -51,6 +62,8 @@ function SignInPage() {
     }
 
     const handleGithubSignIn = async () => {
+        await clearOAuthCookies();
+
         const { error } = await authClient.signIn.social({
             provider: "github",
             callbackURL: "/"
