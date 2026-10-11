@@ -15,8 +15,12 @@ function SignInPage() {
     const [password, setPassword] = useState("");
 
     useEffect(() => {
-        setEmail(sessionStorage.getItem("signupEmail") || "");
-        setPassword(sessionStorage.getItem("signupPassword") || "");
+        const timeoutId = window.setTimeout(() => {
+            setEmail(sessionStorage.getItem("signupEmail") || "");
+            setPassword(sessionStorage.getItem("signupPassword") || "");
+        }, 0);
+
+        return () => window.clearTimeout(timeoutId);
     }, []);
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -37,17 +41,23 @@ function SignInPage() {
     }
 
     const handleGoogleSignIn = async () => {
-        await authClient.signIn.social({
+        const { error } = await authClient.signIn.social({
             provider: "google",
             callbackURL: "/",
         })
+        if (error) {
+            toast.error(error.message || "Google login failed!")
+        }
     }
 
     const handleGithubSignIn = async () => {
-        await authClient.signIn.social({
+        const { error } = await authClient.signIn.social({
             provider: "github",
             callbackURL: "/"
         })
+        if (error) {
+            toast.error(error.message || "GitHub login failed!")
+        }
     }
     return (
         <main className="min-h-screen bg-[#f0f5f0] px-4 py-10 flex items-center justify-center">

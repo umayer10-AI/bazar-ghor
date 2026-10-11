@@ -40,15 +40,22 @@ function SignUpPage() {
     }
 
     const handleGoogleSignUp = async () => {
-        await authClient.signIn.social({
+        const { error } = await authClient.signIn.social({
             provider: "google",
             callbackURL: "/",
         })
+        if (error) {
+            toast.error(error.message || "Google signup failed!")
+        }
     }
     const handleGithubSignUp = async () => {
-        await authClient.signIn.social({
-            provider: "github"
+        const { error } = await authClient.signIn.social({
+            provider: "github",
+            callbackURL: "/",
         })
+        if (error) {
+            toast.error(error.message || "GitHub signup failed!")
+        }
     }
     return (
         <main className="min-h-screen bg-[#f0f5f0] px-4 py-10 flex items-center justify-center">
